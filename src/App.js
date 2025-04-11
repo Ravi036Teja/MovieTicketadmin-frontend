@@ -19,6 +19,7 @@ function App() {
           element={<SelectTheaterAndShowtime />}
         />
        {/* <Route path="/seat-layout/:showtimeId" element={<SeatSelection/>} /> */}
+       {/* <Route path="/select-seat/:movieId/:showtimeId" element={<SeatSelection />} /> */}
        <Route path="/select-seat/:showtimeId" element={<SeatSelection />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/ticket/:bookingId" element={<Ticket />} />

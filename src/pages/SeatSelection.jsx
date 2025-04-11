@@ -1,70 +1,66 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 
-const SeatSelection = () => {
-  const { showtimeId } = useParams();
-  const [searchParams] = useSearchParams();
-  const movieId = searchParams.get("movieId");
-
-  const [showtime, setShowtime] = useState(null);
+const SeatSelection = ({ showtimeId }) => {
+  const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [userId, setUserId] = useState("user123"); // replace with actual logged-in user
 
   useEffect(() => {
-    const fetchShowtimeDetails = async () => {
+    const fetchSeats = async () => {
       try {
-        const res = await axios.get(
-          `https://movieticketadmin-backend.onrender.com/api/showtimes/${showtimeId}`
-        );
-        setShowtime(res.data);
+        const res = await axios.get(`https://movieticketadmin-backend.onrender.com/api/seats/${showtimeId}`);
+        setSeats(res.data);
       } catch (err) {
-        console.error("Failed to fetch showtime details:", err);
-        setError("Unable to fetch showtime details.");
-      } finally {
-        setLoading(false);
+        console.error("Error fetching seats:", err);
       }
     };
 
     if (showtimeId) {
-      fetchShowtimeDetails();
+      fetchSeats();
     }
   }, [showtimeId]);
 
-  const toggleSeat = (seatNumber) => {
+  const toggleSeat = (seatId) => {
     setSelectedSeats((prev) =>
-      prev.includes(seatNumber)
-        ? prev.filter((s) => s !== seatNumber)
-        : [...prev, seatNumber]
+      prev.includes(seatId) ? prev.filter((id) => id !== seatId) : [...prev, seatId]
     );
   };
 
-  if (loading) return <div className="text-center p-4">Loading seats...</div>;
-  if (error) return <div className="text-center text-red-600 p-4">{error}</div>;
-  if (!showtime || !showtime.seatLayout)
-    return <div className="text-center p-4">Showtime not found or no seats.</div>;
+  const handleBooking = async () => {
+    if (selectedSeats.length === 0) return alert("Select at least one seat!");
+
+    try {
+      const res = await axios.post("https://movieticketadmin-backend.onrender.com/api/bookings", {
+        showtimeId,
+        seatIds: selectedSeats,
+        userId,
+      });
+
+      alert("Booking successful!");
+      console.log("Booking Response:", res.data);
+      setSelectedSeats([]); // reset after booking
+    } catch (err) {
+      console.error("Booking failed:", err);
+      alert("Booking failed. Try again.");
+    }
+  };
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-2">Seat Selection</h2>
-      <p className="mb-4 text-gray-600">
-        <strong>Movie ID:</strong> {movieId} <br />
-        <strong>Showtime:</strong> {new Date(showtime.startTime).toLocaleString()}
-      </p>
-
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Select Your Seats</h2>
       <div className="grid grid-cols-10 gap-2">
-        {showtime.seatLayout.map((seat, idx) => (
+        {seats.map((seat) => (
           <div
-            key={idx}
-            className={`border rounded p-2 text-center cursor-pointer text-sm ${
+            key={seat._id}
+            onClick={() => !seat.isBooked && toggleSeat(seat._id)}
+            className={`p-2 text-center cursor-pointer rounded ${
               seat.isBooked
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : selectedSeats.includes(seat.seatNumber)
+                ? "bg-gray-400 cursor-not-allowed"
+                : selectedSeats.includes(seat._id)
                 ? "bg-green-500 text-white"
-                : "bg-white"
+                : "bg-blue-200"
             }`}
-            onClick={() => !seat.isBooked && toggleSeat(seat.seatNumber)}
           >
             {seat.seatNumber}
           </div>
@@ -72,8 +68,15 @@ const SeatSelection = () => {
       </div>
 
       <div className="mt-6">
-        <h3 className="font-semibold">Selected Seats:</h3>
-        <p>{selectedSeats.length > 0 ? selectedSeats.join(", ") : "None"}</p>
+        <h3 className="font-semibold mb-2">Selected Seats:</h3>
+        <p>{selectedSeats.join(", ")}</p>
+
+        <button
+          onClick={handleBooking}
+          className="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+        >
+          Confirm Booking
+        </button>
       </div>
     </div>
   );

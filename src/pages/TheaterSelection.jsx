@@ -112,7 +112,7 @@ export default function SelectTheaterAndShowtime() {
         {selectedShowtime && (
           <button
           onClick={() =>
-            navigate(`/select-seat/${selectedShowtime}?movieId=${movieId}`)
+            navigate(`/select-seat/${movieId}/${selectedShowtime}`)
           }
           
             className="w-full mt-6 bg-black text-white py-3 rounded-lg"
