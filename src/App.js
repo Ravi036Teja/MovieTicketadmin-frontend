@@ -5,8 +5,7 @@ import Payment from "./pages/Payment";
 import Ticket from "./pages/Ticket";
 import SelectTheaterAndShowtime from "./pages/TheaterSelection";
 import BookingConfirmation from "./pages/BookingConfirmation";
-import SeatLayout from "./pages/SeatSelection";
-
+import SeatSelection from "./pages/SeatSelection";
 
 function App() {
   return (
@@ -14,13 +13,19 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
-        
-        <Route path="/movie/:movieId/select-theater" element={<SelectTheaterAndShowtime />} />
-        <Route path="/movie/:movieId/:showtimeId" element={<SeatLayout />} />
+
+        <Route
+          path="/movie/:movieId/select-theater"
+          element={<SelectTheaterAndShowtime />}
+        />
+       {/* <Route path="/seat-layout/:showtimeId" element={<SeatSelection/>} /> */}
+       <Route path="/select-seat/:showtimeId" element={<SeatSelection />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/ticket/:bookingId" element={<Ticket />} />
-        <Route path="/booking-confirmation/:bookingId" element={<BookingConfirmation />} />
-
+        <Route
+          path="/booking-confirmation/:bookingId"
+          element={<BookingConfirmation />}
+        />
       </Routes>
     </div>
   );

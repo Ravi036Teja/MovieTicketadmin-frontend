@@ -48,8 +48,8 @@ export default function MovieDetails() {
   const trailerEmbedUrl = videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0` : null;
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-start py-8 px-4">
-      <div className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-xl relative">
+    <div className="min-h-screen bg-[#f5f5f5] flex justify-center items-start">
+      <div className="w-full max-w-md bg-white  overflow-hidden shadow-xl relative">
         {/* Trailer Section: Embed the trailer video if available */}
         {trailerEmbedUrl && (
           <div className="relative h-56 w-full">
@@ -58,15 +58,16 @@ export default function MovieDetails() {
               src={trailerEmbedUrl}
               title="Trailer"
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture loop"
               allowFullScreen
             ></iframe>
           </div>
         )}
 
-        {/* Poster and Movie Info */}
+        <div className="grid grid-cols-2">
+          {/* Poster and Movie Info */}
         <div className="relative px-4 -mt-12">
-          <div className="w-32 h-48 rounded-xl overflow-hidden shadow-md border-4 border-white">
+          <div className="w-34 h-50 rounded-xl overflow-hidden shadow-md border-4 border-white">
             <img
               src={movie.posterUrl}
               alt={movie.title}
@@ -75,23 +76,24 @@ export default function MovieDetails() {
           </div>
         </div>
 
-        <div className="px-4 pt-4 space-y-2">
+        <div className="px-4 pt-8 space-y-2">
           <h1 className="text-xl font-semibold">{movie.title}</h1>
           <p className="text-gray-500 text-sm">{movie.genre || "Action"}</p>
-          <p className="text-gray-500 text-sm">{movie.duration} Hrs</p>
+          <p className="text-gray-500 text-sm">{movie.duration} Hours</p>
+          <p className="text-gray-500 text-sm">{movie.language}</p>
           <div className="flex items-center gap-2 text-sm">
             <span className="font-semibold">{movie.rating}/10</span>
             <span className="bg-yellow-400 text-black font-bold text-xs px-2 py-0.5 rounded">
               IMDb
             </span>
           </div>
-          <p className="text-gray-700 text-sm pt-2">{movie.description}</p>
         </div>
-
+        </div>
         {/* Cast list: This will be displayed on the Movie Details page */} 
         <div className="px-4 pt-4">
-          <h2 className="font-semibold text-gray-800 mb-2">Cast</h2>
-          <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
+        <p className="text-gray-700 text-sm py-12">{movie.description}</p>
+          <h2 className="font-semibold text-gray-800 mb-2 py-2">Cast</h2>
+          <div className="flex space-x-3 overflow-x-auto scrollbar-hide py-2">
             {(movie.cast || []).map((actor, index) => (
               <div key={index} className="flex-shrink-0 w-20 text-center">
                 <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-1 border">
